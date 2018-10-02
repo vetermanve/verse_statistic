@@ -1,0 +1,33 @@
+{
+  "name": "verse/statistic",
+  "description": "Statistic library providing column-based pre-calculated statistic",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Denisov Mikhail",
+      "email": "manwebdev@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {"Verse\\Statistic\\": "src/Verse/Statistic"}
+  },
+  "autoload-dev": {
+    "psr-4": {"Verse\\Statistic\\": "tests/Verse/Statistic"}
+  },
+  "require": {
+    "php": ">=7.1",
+    "verse/modular": "^1.0",
+    "verse/env": "0.0.2",
+    "psr/log": "^1.0",
+    "verse/router": "1.0.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  },
+  "scripts": {
+    "test": [
+      "phpunit"
+    ]
+  }
+}
