@@ -12,24 +12,20 @@ class EventsContainer
      * @var array
      */
     public $events = [];
-
-
+    
     /**
-     * Array of events split by global scope  
-     * 
+     * Event Names in index and hashes in value
      * @var array
      */
-    public $eventsByScope = [];
+    public $eventNamesHashes = [];
 
     /**
-     * Array of events split by unique users
-     * @todo check usage
-     * 
+     * Container Action reports;
+     *
      * @var array
      */
-    public $userIdsByCompany = [];
-    
-    
+    public $reports = [];
+
     public function eventsCount () : int 
     {
         return \count($this->events);
@@ -39,20 +35,4 @@ class EventsContainer
     {
         $this->events = array_merge($this->events, $events);
     }
-    
-    public function setEvents ($events) : void
-    {
-        $this->events = $events;
-    }
-    
-    public function getEventsByScopeCount()  : int
-    {
-        return \count($this->eventsByScope);
-    }
-    
-    public function getScopesIds()
-    {
-        return array_keys($this->eventsByScope);
-    }
-    
 }

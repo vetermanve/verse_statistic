@@ -8,7 +8,7 @@ use Verse\Statistic\Aggregate\EventStream\Event\EventStreamItem;
 use Verse\Statistic\Aggregate\EventStream\FilesDirectoryEventStream;
 use Verse\Statistic\Aggregate\Reader\EventStreamReader;
 
-class FileDirectoryStreamTests extends \PHPUnit\Framework\TestCase
+class FileDirectoryStreamTest extends \PHPUnit\Framework\TestCase
 {
     public function testStreamReading () 
     {

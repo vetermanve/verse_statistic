@@ -15,7 +15,7 @@ class LocalFileTransport implements StatisticWriteClientTransportInterface
         return $this->statFilesDirectory.'/'.date("Ymd").'.stats.log';
     }
     
-    public function send(string $payload)
+    public function send(string $payload) : bool
     {
         !$this->isDirectoryChecked && $this->_checkDir();
         return (bool)file_put_contents($this->getCurrentFileName(), $payload."\n", FILE_APPEND);   

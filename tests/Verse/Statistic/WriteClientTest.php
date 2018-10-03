@@ -8,7 +8,7 @@ use Verse\Statistic\WriteClient\Stats;
 use Verse\Statistic\WriteClient\Transport\InMemoryTransport;
 use Verse\Statistic\WriteClient\Transport\LocalFileTransport;
 
-class TestWriteClient extends TestCase
+class WriteClientTest extends TestCase
 {
     
     public function testInMemoryTransport () 
