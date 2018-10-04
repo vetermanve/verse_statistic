@@ -8,7 +8,7 @@ use Verse\Modular\ModularStrategyInterface;
 use Verse\Statistic\Configuration\Grouping\AbstractGrouping;
 use Verse\Statistic\Core\StatsModuleProto;
 
-class SplitEventsToStatRecords extends StatsModuleProto implements ModularStrategyInterface
+class GroupEventsToStatRecords extends StatsModuleProto implements ModularStrategyInterface
 {
     /**
      * @var AbstractGrouping[]

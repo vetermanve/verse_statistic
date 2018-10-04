@@ -10,7 +10,7 @@ use Verse\Statistic\Core\Model\StatRecord;
 use Verse\Statistic\Core\Model\TimeScale;
 use Verse\Statistic\Core\StatsModuleProto;
 
-class MakeResultsHoursAggregation extends StatsModuleProto implements ModularStrategyInterface
+class AddHoursAggregationRecords extends StatsModuleProto implements ModularStrategyInterface
 {
 
     public function prepare()
@@ -21,11 +21,14 @@ class MakeResultsHoursAggregation extends StatsModuleProto implements ModularStr
     public function run()
     {
         foreach ($this->container->data as $statRecord) {
-            $this->container->results[] = [
-                StatRecord::TIME_ID   => (int)ceil($statRecord[StatRecord::TIME_RAW] / 3600) * 3600,
-                StatRecord::TIME_TYPE => TimeScale::HOUR,
-                StatRecord::TIME_RAW => 0,
-            ] + $statRecord;
+            if ($statRecord[StatRecord::TIME_SCALE] !== TimeScale::RAW) {
+                continue;
+            }
+            
+            $this->container->data[] = [
+                    StatRecord::TIME       => (int)ceil($statRecord[StatRecord::TIME] / 3600) * 3600,
+                    StatRecord::TIME_SCALE => TimeScale::HOUR,
+                ] + $statRecord;
         }
     }
 

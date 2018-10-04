@@ -8,6 +8,8 @@ use Verse\Statistic\Configuration\Grouping\BasicGroping;
 use Verse\Statistic\Configuration\GroupingFactory;
 use Verse\Statistic\Configuration\StatisticFactory;
 use Verse\Statistic\Core\ExampleStats\ExampleVisitStatistic;
+use Verse\Statistic\Core\Model\StatRecord;
+use Verse\Statistic\Core\Model\TimeScale;
 use Verse\Statistic\Core\Schema\FileBasedStatsSchema;
 
 class CoreProcessingSchemaTest extends TestCase
@@ -33,7 +35,29 @@ class CoreProcessingSchemaTest extends TestCase
         $processor->addSchema(new FileBasedStatsSchema());
         $processor->run();
         
-        $this->assertNotEmpty($container->results);
-        $this->assertCount($container->evensContainer->eventsCount() * 3, $container->results);
+        $this->assertNotEmpty($container->data);
+
+        $rawRecords = array_filter($container->data, function ($rec) {
+            return $rec[StatRecord::TIME_SCALE] === TimeScale::RAW;
+        });
+
+        $this->assertNotEmpty($rawRecords);
+        $rawRecordsCount = count($rawRecords);
+        
+        $hourAggregated = array_filter($container->data, function ($rec) {
+            return $rec[StatRecord::TIME_SCALE] === TimeScale::HOUR; 
+        });
+        $this->assertCount($rawRecordsCount, $hourAggregated);
+
+        $dayAggregated = array_filter($container->data, function ($rec) {
+            return $rec[StatRecord::TIME_SCALE] === TimeScale::DAY;
+        });
+        $this->assertCount($rawRecordsCount, $dayAggregated);
+
+        $monthAggregated = array_filter($container->data, function ($rec) {
+            return $rec[StatRecord::TIME_SCALE] === TimeScale::MONTH;
+        });
+
+        $this->assertCount($rawRecordsCount, $monthAggregated);
     }
 }

@@ -6,11 +6,12 @@ namespace Verse\Statistic\Configuration\Grouping;
 
 use Verse\Statistic\Core\Event;
 use Verse\Statistic\Core\Model\StatRecord;
+use Verse\Statistic\Core\Model\TimeScale;
 
 class BasicGroping extends AbstractGrouping
 {
     const TYPE = 1;
-    
+
     public function getStatRecords() : array
     {
         $records = [];
@@ -19,13 +20,15 @@ class BasicGroping extends AbstractGrouping
 
         foreach ($eventContainer->events as $event) {
             $records[] = [
-                StatRecord::EVENT_ID   => $eventContainer->eventNamesHashes[$event[Event::NAME]] ?? crc32($event[Event::NAME]),
-                StatRecord::COUNT      => $event[Event::COUNT],
-                StatRecord::TIME_RAW   => $event[Event::TIME],
+                StatRecord::EVENT_ID  => $eventContainer->eventNamesHashes[$event[Event::NAME]] ?? crc32($event[Event::NAME]),
                 StatRecord::SCOPE_ID   => $event[Event::SCOPE_ID],
-                StatRecord::COUNT_UNQ  => 0,
                 StatRecord::GROUP_TYPE => $groupType,
                 StatRecord::GROUP_ID   => 0,
+                StatRecord::UNIQUE_ID => $event[Event::UNIQUE_ID],
+                StatRecord::TIME       => $event[Event::TIME],
+                StatRecord::TIME_SCALE => TimeScale::RAW,
+                StatRecord::COUNT     => $event[Event::COUNT],
+                StatRecord::COUNT_UNQ => 0,
             ];
         }
 
@@ -36,8 +39,8 @@ class BasicGroping extends AbstractGrouping
     {
         return self::TYPE;
     }
-    
-    public function getGroupName () : string 
+
+    public function getGroupName() : string
     {
         return 'All';
     }
