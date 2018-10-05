@@ -24,6 +24,10 @@ class LoadEventsFromFiles extends StatsModuleProto implements ModularStrategyInt
         $stream = new FilesDirectoryEventStream();
         $stream->setStatFilesDirectory($this->context->get(StatsContext::FILE_STATS_DIRECTORY, '/tmp/stats/'));
         
+        if ($this->context->get(StatsContext::FILE_STATS_REREAD_ALL)) {
+            $stream->forgetStreamPosition(); 
+        }
+        
         $this->reader = new EventStreamReader();
         $this->reader->setDecoder(new JsonDecoder());
         $this->reader->setEventStream($stream);

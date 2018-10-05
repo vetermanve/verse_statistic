@@ -10,8 +10,9 @@ use Verse\Statistic\Configuration\StatisticFactory;
 
 class StatsContext extends ModularContextProto
 {
-    const FILE_STATS_DIRECTORY = 'file-stats-dir';
-    
+    const FILE_STATS_DIRECTORY  = 'file-stats-dir';
+    const FILE_STATS_REREAD_ALL = 'file-stats-reread-all';
+
     const READER_CHUNK_SIZE = 'reader-chunk-size';
 
     /**
