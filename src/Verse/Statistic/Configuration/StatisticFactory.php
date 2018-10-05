@@ -16,7 +16,16 @@ class StatisticFactory
      */
     public function addStats(Stats\AbstractStatistic $stats)
     {
-        $this->stats[] = $stats;
+        $this->stats[$stats->getId()] = $stats;
+    }
+
+    /**
+     * @param $statsId
+     * @return null|Stats\AbstractStatistic
+     */
+    public function getStatsById ($statsId) 
+    {
+        return $this->stats[$statsId] ?? null;
     }
     
     /**
