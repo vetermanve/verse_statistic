@@ -4,7 +4,7 @@
 namespace Verse\Statistic\WriteClient;
 
 
-class Stats
+class Stats implements StatsClientInterface
 {
     const ST_EVENT_NAME = 0;
     const ST_USER_ID    = 1;
