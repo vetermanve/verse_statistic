@@ -8,7 +8,7 @@ use Verse\Modular\ModularStrategyInterface;
 use Verse\Statistic\Core\Model\StatRecord;
 use Verse\Statistic\Core\StatsModuleProto;
 
-class CompressResultsByStatRecordUniqId extends StatsModuleProto implements ModularStrategyInterface
+class CompressDataStatRecordByUniqId extends StatsModuleProto implements ModularStrategyInterface
 {
 
     public function prepare()
@@ -20,7 +20,7 @@ class CompressResultsByStatRecordUniqId extends StatsModuleProto implements Modu
     {
         $compressedResults = [];
         
-        foreach ($this->container->results as $statRecord) {
+        foreach ($this->container->data as $statRecord) {
             $id = StatRecord::getRecordUniqId($statRecord);
 
             // remember and optimi
@@ -31,11 +31,11 @@ class CompressResultsByStatRecordUniqId extends StatsModuleProto implements Modu
             }    
         }
         
-        $this->container->results = $compressedResults;
+        $this->container->data = $compressedResults;
     }
 
     public function shouldProcess()
     {
-        return $this->container->results;
+        return $this->container->data;
     }
 }

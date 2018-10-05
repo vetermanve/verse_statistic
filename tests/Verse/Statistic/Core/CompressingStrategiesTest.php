@@ -7,7 +7,7 @@ namespace Verse\Statistic\Core;
 use PHPUnit\Framework\TestCase;
 use Verse\Statistic\Core\Model\StatRecord;
 use Verse\Statistic\Core\Model\TimeScale;
-use Verse\Statistic\Core\Strategy\Compress\CompressResultsByStatRecordUniqId;
+use Verse\Statistic\Core\Strategy\Compress\CompressDataStatRecordByUniqId;
 
 class CompressingStrategiesTest extends TestCase
 {
@@ -48,25 +48,25 @@ class CompressingStrategiesTest extends TestCase
         $uniqueIds = [1,1];
         $times = [1,1,2,2];
         
-        $container->results = $this->makeRecords($eventsIds, $uniqueIds, $times);
+        $container->data = $this->makeRecords($eventsIds, $uniqueIds, $times);
         
         $allEventCountShouldBe = \count($eventsIds) * \count($uniqueIds) * \count($times);
         
         // check test data correct generated
-        $this->assertCount($allEventCountShouldBe, $container->results);
+        $this->assertCount($allEventCountShouldBe, $container->data);
         
         // bind test data to processor
         $processor->setContainer($container);
-        $processor->addStrategy(new CompressResultsByStatRecordUniqId());
+        $processor->addStrategy(new CompressDataStatRecordByUniqId());
         $processor->run();
         
         $allFilteredEventsCountShouldBe = \count(\array_unique($eventsIds)) * \count(\array_unique($uniqueIds)) * \count(\array_unique($times));
         
         // check data filtered by count
-        $this->assertCount($allFilteredEventsCountShouldBe, $container->results);
+        $this->assertCount($allFilteredEventsCountShouldBe, $container->data);
         
         $compressedValueShouldBe = $allEventCountShouldBe/$allFilteredEventsCountShouldBe;
-        foreach ($container->results as $result) {
+        foreach ($container->data as $result) {
             $this->assertEquals($compressedValueShouldBe, $result[StatRecord::COUNT]);
         }
     }
