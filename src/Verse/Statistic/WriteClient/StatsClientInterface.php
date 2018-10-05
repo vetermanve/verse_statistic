@@ -6,7 +6,7 @@ namespace Verse\Statistic\WriteClient;
 
 interface StatsClientInterface
 {
-    public function event($field, $userId, $scopeId = 0, array $context = [], float $count = 1, $eventTime = null) : self;
+    public function event($field, $userId, $scopeId = 0, array $context = [], float $count = 1, $eventTime = null);
 
     public function sendEventData ($eventData) : bool;
 

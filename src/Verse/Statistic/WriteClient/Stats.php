@@ -36,7 +36,7 @@ class Stats implements StatsClientInterface
      * 
      * @return $this|\Verse\Statistic\WriteClient\Stats
      */
-    public function event($field, $userId, $scopeId = 0, array $context = [], float $count = 1, $eventTime = null) : self
+    public function event($field, $userId, $scopeId = 0, array $context = [], float $count = 1, $eventTime = null)
     {
         $this->sendEventData($this->makeEventData($field, $userId, $scopeId, $context, $count, $eventTime));
 
