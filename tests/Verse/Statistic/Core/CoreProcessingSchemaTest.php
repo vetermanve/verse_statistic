@@ -10,7 +10,11 @@ use Verse\Statistic\Configuration\StatisticFactory;
 use Verse\Statistic\Core\ExampleStats\ExampleVisitStatistic;
 use Verse\Statistic\Core\Model\StatRecord;
 use Verse\Statistic\Core\Model\TimeScale;
+use Verse\Statistic\Core\Schema\DefaultTimeAggregationSchema;
 use Verse\Statistic\Core\Schema\FileBasedStatsSchema;
+use Verse\Statistic\Core\Schema\LoadEventsFromFilesSchema;
+use Verse\Statistic\Core\Schema\GroupEventsToStatRecordsSchema;
+use Verse\Statistic\Core\Strategy\Grouping\GroupEventsToStatRecords;
 
 class CoreProcessingSchemaTest extends TestCase
 {
@@ -32,7 +36,10 @@ class CoreProcessingSchemaTest extends TestCase
         $processor->setContext($context);
         $processor->setContainer($container);
         
-        $processor->addSchema(new FileBasedStatsSchema());
+        $processor->addSchema(new LoadEventsFromFilesSchema());
+        $processor->addSchema(new GroupEventsToStatRecordsSchema());
+        $processor->addSchema(new DefaultTimeAggregationSchema());
+        
         $processor->run();
         
         $this->assertNotEmpty($container->data);

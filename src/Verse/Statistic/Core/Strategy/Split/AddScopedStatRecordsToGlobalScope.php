@@ -24,7 +24,7 @@ class AddScopedStatRecordsToGlobalScope extends StatsModuleProto implements Modu
 
         $globalScopeStatRecords = [];
         foreach ($this->container->data as &$statRecord) {
-            if ($statRecord[StatRecord::SCOPE_ID] > 0) {
+            if ($statRecord[StatRecord::SCOPE_ID]) {
                 $globalScopeStatRecords[] = $globalScope + $statRecord;
             }
         } unset($statRecord);

@@ -8,6 +8,8 @@ use Verse\Modular\ModularProcessor;
 use Verse\Modular\ModularSchemaInterface;
 use Verse\Statistic\Core\StatsModuleProto;
 use Verse\Statistic\Core\Strategy\Aggregate\LoadEventsFromFiles;
+use Verse\Statistic\Core\Strategy\Compress\CompressDataStatRecordByUniqId;
+use Verse\Statistic\Core\Strategy\Filter\FilterRawTimeRecords;
 use Verse\Statistic\Core\Strategy\Grouping\GroupEventsToStatRecords;
 use Verse\Statistic\Core\Strategy\Load\LoadKnownEventNamesAndHashes;
 use Verse\Statistic\Core\Strategy\Load\LoadStatisticModels;
@@ -41,5 +43,9 @@ class FileBasedStatsSchema extends StatsModuleProto implements ModularSchemaInte
         $processor->addStrategy(new AddHoursAggregationRecords(), $processor::SECTION_RUN);
         $processor->addStrategy(new AddDayAggregationRecords(), $processor::SECTION_RUN);
         $processor->addStrategy(new AddMonthAggregationRecords(), $processor::SECTION_RUN);
+        
+        $processor->addStrategy(new FilterRawTimeRecords(), $processor::SECTION_RUN);
+        
+        $processor->addStrategy(new CompressDataStatRecordByUniqId(), $processor::SECTION_RUN);
     }
 }
