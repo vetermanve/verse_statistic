@@ -15,8 +15,8 @@ class StatRecord
     const COUNT      = 'cnt';
     const COUNT_UNQ  = 'unq';
 
-    const TIME_RAW   = '-time_raw';
-    const UNIQUE_ID  = '-unique_id';
+    const TIME_RAW   = 'time_raw';
+    const UNIQUE_ID  = 'unique_id';
 
     public static function getRecordId($record)
     {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Verse\Statistic\Core\Strategy\Load;
+namespace Verse\Statistic\Core\Strategy\UniequeProcessing;
 
 
 use Verse\Modular\ModularStrategyInterface;
@@ -12,19 +12,15 @@ use Verse\Statistic\Storage\Unique\UniqueStorageInterface;
 
 class LoadUniqDataForStatRecords extends StatsModuleProto implements ModularStrategyInterface
 {
-    /**
-     * @var UniqueStorageInterface
-     */
-    private $uniqStorage;
 
     public function prepare()
     {
-        $this->uniqStorage = new InMemoryUniqueStorage();
+        
     }
 
     public function run()
     {
-        $uniqData = $this->uniqStorage->checkRecordsUnique($this->container->data);
+        $uniqData = $this->context->uniqueStorage->checkRecordsUnique($this->container->data);
         
         foreach ($uniqData as $id => $isUniq) {
             if ($isUniq) {
@@ -35,6 +31,6 @@ class LoadUniqDataForStatRecords extends StatsModuleProto implements ModularStra
 
     public function shouldProcess()
     {
-        return $this->container->getDataCount() > 0;
+        return $this->container->getDataCount() > 0 && $this->context->uniqueStorage;
     }
 }

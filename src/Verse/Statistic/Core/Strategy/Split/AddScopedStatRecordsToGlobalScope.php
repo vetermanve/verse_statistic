@@ -5,7 +5,6 @@ namespace Verse\Statistic\Core\Strategy\Split;
 
 
 use Verse\Modular\ModularStrategyInterface;
-use Verse\Statistic\Core\Event;
 use Verse\Statistic\Core\Model\StatRecord;
 use Verse\Statistic\Core\StatsModuleProto;
 

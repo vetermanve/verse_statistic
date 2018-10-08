@@ -11,7 +11,7 @@ use Verse\Statistic\Aggregate\Reader\EventStreamReader;
 use Verse\Statistic\Core\StatsContext;
 use Verse\Statistic\Core\StatsModuleProto;
 
-class LoadEventsFromFiles extends StatsModuleProto implements ModularStrategyInterface
+class LoadEventsFromStream extends StatsModuleProto implements ModularStrategyInterface
 {
 
     /**

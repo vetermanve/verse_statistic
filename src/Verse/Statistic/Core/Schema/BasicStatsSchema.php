@@ -8,21 +8,22 @@ use Verse\Modular\ModularProcessor;
 use Verse\Modular\ModularSchemaInterface;
 use Verse\Statistic\Core\StatsModuleProto;
 use Verse\Statistic\Core\Strategy\Aggregate\AcknowledgeEvents;
-use Verse\Statistic\Core\Strategy\Aggregate\LoadEventsFromFiles;
+use Verse\Statistic\Core\Strategy\Aggregate\LoadEventsFromStream;
 use Verse\Statistic\Core\Strategy\Compress\CompressDataStatRecordByUniqId;
 use Verse\Statistic\Core\Strategy\Compress\CompressDataStatRecordDropUniqAndMakeResults;
 use Verse\Statistic\Core\Strategy\Filter\FilterRawTimeRecords;
 use Verse\Statistic\Core\Strategy\Grouping\GroupEventsToStatRecords;
 use Verse\Statistic\Core\Strategy\Load\LoadKnownEventNamesAndHashes;
 use Verse\Statistic\Core\Strategy\Load\LoadStatisticModels;
-use Verse\Statistic\Core\Strategy\Load\LoadUniqDataForStatRecords;
 use Verse\Statistic\Core\Strategy\Split\AddScopedStatRecordsToGlobalScope;
 use Verse\Statistic\Core\Strategy\Split\AddMonthAggregationRecords;
 use Verse\Statistic\Core\Strategy\Split\AddDayAggregationRecords;
 use Verse\Statistic\Core\Strategy\Split\AddHoursAggregationRecords;
 use Verse\Statistic\Core\Strategy\Storing\StoreResults;
+use Verse\Statistic\Core\Strategy\UniequeProcessing\LoadUniqDataForStatRecords;
+use Verse\Statistic\Core\Strategy\UniequeProcessing\StoreUniqueToStorage;
 
-class FileBasedStatsSchema extends StatsModuleProto implements ModularSchemaInterface
+class BasicStatsSchema extends StatsModuleProto implements ModularSchemaInterface
 {
 
     /**
@@ -34,7 +35,9 @@ class FileBasedStatsSchema extends StatsModuleProto implements ModularSchemaInte
         $processor->addStrategy(new LoadStatisticModels(), $processor::SECTION_VERY_FIRST);
         
         // load new events
-        $processor->addStrategy(new LoadEventsFromFiles(), $processor::SECTION_BEFORE);
+        $processor->addStrategy(new LoadEventsFromStream(), $processor::SECTION_VERY_FIRST);
+        
+        // prepare some events info for grouping 
         $processor->addStrategy(new LoadKnownEventNamesAndHashes(), $processor::SECTION_BEFORE);
         
         // make events stats records by grouping 
@@ -62,6 +65,9 @@ class FileBasedStatsSchema extends StatsModuleProto implements ModularSchemaInte
         
         // store results to db
         $processor->addStrategy(new StoreResults(), $processor::SECTION_AFTER);
+        
+        // store unique marks
+        $processor->addStrategy(new StoreUniqueToStorage(), $processor::SECTION_AFTER);
         
         // acknowledge events
         $processor->addStrategy(new AcknowledgeEvents(),$processor::SECTION_VERY_LAST);

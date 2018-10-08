@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Verse\Statistic\Core;
+namespace Verse\Statistic\Core\Model;
 
 
 class Event

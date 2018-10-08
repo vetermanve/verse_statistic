@@ -12,11 +12,11 @@ use Verse\Statistic\Core\ExampleStats\ExampleVisitStatistic;
 use Verse\Statistic\Core\Model\StatRecord;
 use Verse\Statistic\Core\Model\TimeScale;
 use Verse\Statistic\Core\Schema\DefaultTimeAggregationSchema;
-use Verse\Statistic\Core\Schema\FileBasedStatsSchema;
+use Verse\Statistic\Core\Schema\BasicStatsSchema;
 use Verse\Statistic\Core\Schema\LoadEventsFromFilesSchema;
 use Verse\Statistic\Core\Schema\GroupEventsToStatRecordsSchema;
-use Verse\Statistic\Core\Strategy\Grouping\GroupEventsToStatRecords;
 use Verse\Statistic\Storage\Records\VerseStorageStatRecords;
+use Verse\Statistic\Storage\Unique\VerseStorageUnique;
 
 class CoreProcessingSchemaTest extends TestCase
 {
@@ -76,36 +76,86 @@ class CoreProcessingSchemaTest extends TestCase
     {
         $context = new StatsContext();
         
+        $jsonFileStoragePath = __DIR__.DIRECTORY_SEPARATOR.'test-stats-full-schema'.DIRECTORY_SEPARATOR.'jbase';
+        
+        //// stats storage
         $storage = new VerseStorageStatRecords();
-        $storage->setDataRootPath(__DIR__.DIRECTORY_SEPARATOR.'test-stats-full-schema'.DIRECTORY_SEPARATOR.'storage');
+        $storage->getContext()->set(VerseStorageStatRecords::DATA_ROOT_PATH, $jsonFileStoragePath);
+        
+        // clearing storage
         $data = $storage->search()->find([], 100000, __METHOD__);
         foreach ($data as $id => $_) {
             $storage->write()->remove($id, __METHOD__);    
         }
+        // bind storage
+        $context->statsStorage = $storage;
+
+        //// unique storage
+        $uniqueStorage = new VerseStorageUnique();
+        $uniqueStorage->getContext()->set(VerseStorageStatRecords::DATA_ROOT_PATH, $jsonFileStoragePath);
+
+        // clearing storage
+        $uniqueData = $uniqueStorage->search()->find([], 100000, __METHOD__);
+        foreach ($uniqueData as $id => $_) {
+            $uniqueStorage->write()->remove($id, __METHOD__);
+        }
         
+        // bind storage
+        $context->uniqueStorage = $uniqueStorage;
+        
+        // grouping
         $context->groupingFactory = new GroupingFactory();
         $context->groupingFactory->addGroupingModel(BasicGroping::TYPE, new BasicGroping());
 
+        // stats
         $context->statisticFactory = new StatisticFactory();
         $context->statisticFactory->addStats(new ExampleVisitStatistic());
 
+        // event stream
         $context->eventsStream = new FilesDirectoryEventStream();
         $context->eventsStream->setStatFilesDirectory(__DIR__.DIRECTORY_SEPARATOR.'test-stats-full-schema');
         $context->eventsStream->forgetStreamPosition();
         
-        $context->statsStorage = $storage;
-
+        // container
         $container = new StatsContainer();
 
+        // processor
         $processor = new StatProcessor();
         $processor->setContext($context);
         $processor->setContainer($container);
 
-        $processor->addSchema(new FileBasedStatsSchema());
+        // add schema
+        $processor->addSchema(new BasicStatsSchema());
 
+        // run magic
         $processor->run();
 
+        // check magic heppend
         $this->assertNotEmpty($container->results);
+        
+        // should read 9 events
+        $this->assertCount(9, $container->evensContainer->events);
+        
+        // should be 18 data events
+        $this->assertCount(18, $container->data);
+        
+        // should be 6 by unique results
+        $this->assertCount(6, $container->results);
+        
+        // results should be written correctly 
         $this->assertTrue($container->resultsWrotten);
+        
+        $stored = $storage->search()->find([], 100, __METHOD__);
+        
+        array_walk($stored, function (&$rec) {
+            unset($rec['id']);
+        });
+        
+        $this->assertEquals($container->results, $stored);
+        
+        // check unique results stored
+        $uniqData = $uniqueStorage->search()->find([], 100, __METHOD__);
+        $this->assertNotEmpty($uniqData);
+        
     }
 }
