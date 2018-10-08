@@ -21,13 +21,15 @@ class FilesDirectoryEventStream implements EventStreamInterface
     protected $_readBufferSize = 20;
 
     /**
-     * @var Event\EventStreamItem
+     * @var Event\EventStreamItem[]
      */
     private $_eventsPool = [];
     
     private $_dirFiles = [];
+    private $_isDirFilesListingComplete = false;
     
     private $_currentStreamPosition = 0 ;
+    private $_currentPoolPosition   = 0 ;
     
     private $_currentFileName = '';
     private $_currentFilePath = '';
@@ -129,6 +131,10 @@ class FilesDirectoryEventStream implements EventStreamInterface
             }
         }
         
+        if (!$findFileWithName && $fileName === false) {
+            $this->_isDirFilesListingComplete = true;
+        }
+        
         if ($findFileWithName && !$this->_isCurrentFileReadingAvailable) {
             \reset($this->_dirFiles);
         }
@@ -136,12 +142,14 @@ class FilesDirectoryEventStream implements EventStreamInterface
     
     private function _loadForward()
     {
-        if (!$this->_isCurrentFileReadingAvailable) {
-            $this->_selectCurrentFile();
-        }
-        
-        if ($this->_isCurrentFileReadingAvailable) {
-            $this->_loadFileEvents();
+        while (!$this->_isDirFilesListingComplete && \count($this->_eventsPool) < $this->_readBufferSize) {
+            if (!$this->_isCurrentFileReadingAvailable) {
+                $this->_selectCurrentFile();
+            }
+
+            if ($this->_isCurrentFileReadingAvailable) {
+                $this->_loadFileEvents();
+            }
         }
     }
     
@@ -153,7 +161,6 @@ class FilesDirectoryEventStream implements EventStreamInterface
             $this->_currentFileLine = 0;
         }
         
-        $addedEventsCount = 0;
         while ($readResult = fgets($this->_currentFileHandler)) {
             $this->_currentFileLine++;
             
@@ -161,15 +168,15 @@ class FilesDirectoryEventStream implements EventStreamInterface
                 continue;
             }
             
-            $streamPosition = $this->_currentStreamPosition + $addedEventsCount;
+            $poolPosition = $this->_currentPoolPosition++;
             
             $event = new Event\EventStreamItem();
             $event->tag  = $this->_packTag($fileName, $this->_currentFileLine);
             $event->body = trim($readResult);
             
-            $this->_eventsPool[$streamPosition] = $event;
+            $this->_eventsPool[$poolPosition] = $event;
             
-            if ($addedEventsCount++ > $this->_readBufferSize) {
+            if (\count($this->_eventsPool) >= $this->_readBufferSize) {
                 break;
             }
         }
