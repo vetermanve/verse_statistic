@@ -25,14 +25,4 @@ class EventsContainer
      * @var array
      */
     public $reports = [];
-
-    public function eventsCount () : int 
-    {
-        return \count($this->events);
-    }
-    
-    public function addEvents ($events) : void 
-    {
-        $this->events = array_merge($this->events, $events);
-    }
 }

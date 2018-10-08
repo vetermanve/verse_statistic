@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1340be33274cefdfe6301609c022e27",
+    "content-hash": "140467abe41bbdd582d1605d630197b9",
     "packages": [
         {
             "name": "psr/log",
@@ -168,6 +168,52 @@
             ],
             "description": "Router is library for wrapping AMQP messaging",
             "time": "2018-10-01T17:30:49+00:00"
+        },
+        {
+            "name": "verse/storage",
+            "version": "0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vetermanve/verse_storage.git",
+                "reference": "29100ec9b6d96334b43ba3669b0799ee8b48e3c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vetermanve/verse_storage/zipball/29100ec9b6d96334b43ba3669b0799ee8b48e3c3",
+                "reference": "29100ec9b6d96334b43ba3669b0799ee8b48e3c3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "psr/log": "^1.0",
+                "verse/env": "0.0.2",
+                "verse/modular": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Verse\\Storage\\": "src/Verse/Storage"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Denisov Mikhail",
+                    "email": "manwebdev@gmail.com"
+                },
+                {
+                    "name": "Dlussky Kirill",
+                    "email": "kirill@dlussky.ru"
+                }
+            ],
+            "description": "Simple storage library for Verse Framework",
+            "time": "2018-09-30T19:04:09+00:00"
         }
     ],
     "packages-dev": [

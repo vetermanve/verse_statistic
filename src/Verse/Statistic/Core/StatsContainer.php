@@ -21,4 +21,6 @@ class StatsContainer extends ModularContainerProto
      * @var EventsContainer
      */
     public $evensContainer;
+    
+    public $resultsWrotten = false;
 }

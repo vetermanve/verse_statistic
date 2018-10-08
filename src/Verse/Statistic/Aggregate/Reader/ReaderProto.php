@@ -32,6 +32,7 @@ abstract class ReaderProto
     }
     
     abstract public function readChunk();
+    abstract public function acknowledgeEvents();
 
     /**
      * @param EventsContainer $eventsContainer

@@ -17,34 +17,27 @@ class LoadEventsFromFiles extends StatsModuleProto implements ModularStrategyInt
     /**
      * @var EventStreamReader
      */
-    protected $reader;
+    protected $_reader;
     
     public function prepare()
     {
-        $stream = new FilesDirectoryEventStream();
-        $stream->setStatFilesDirectory($this->context->get(StatsContext::FILE_STATS_DIRECTORY, '/tmp/stats/'));
-        
-        if ($this->context->get(StatsContext::FILE_STATS_REREAD_ALL)) {
-            $stream->forgetStreamPosition(); 
-        }
-        
-        $this->reader = new EventStreamReader();
-        $this->reader->setDecoder(new JsonDecoder());
-        $this->reader->setEventStream($stream);
-        $this->reader->setChunkSize($this->context->get(StatsContext::READER_CHUNK_SIZE, 1000));
+        $this->_reader = new EventStreamReader();
+        $this->_reader->setDecoder(new JsonDecoder());
+        $this->_reader->setEventStream($this->context->eventsStream);
+        $this->_reader->setChunkSize($this->context->get(StatsContext::READER_CHUNK_SIZE, 1000));
     }
 
     public function run()
     {
-        $this->reader->prepareCycle();
-        $this->reader->readChunk();
+        $this->_reader->prepareCycle();
+        $this->_reader->readChunk();
         
-        $this->container->evensContainer = $this->reader->getEventsContainer();
+        $this->container->evensContainer = $this->_reader->getEventsContainer();
         $this->container->evensContainer->reports[] = __METHOD__.' produced '. \count($this->container->evensContainer->events).' events';
     }
 
     public function shouldProcess()
     {
-        return true;
+        return $this->context->eventsStream;
     }
 }
