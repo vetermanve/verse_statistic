@@ -61,7 +61,7 @@ class VerseStorageStatRecords extends SimpleStorage implements StatRecordsStorag
         return \count($writeResultsNewSuccess) + \count($writeResultsUpdateSuccess) === \count($records);
     }
 
-    public function findRecords($eventIds, $timeFrom, $timeTo, $timeScale, $groupType = 0, $groupIds = [], $scopeId = 0, $limit = 100000)
+    public function findRecords($eventIds, $timeFrom, $timeTo, $timeScale, $groupType = 0, array $groupIds = [], $scopeId = 0, $limit = 100000)
     {
         $filter = []; 
         $filter[] = [StatRecord::SCOPE_ID, Compare::EQ, $scopeId];
