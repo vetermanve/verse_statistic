@@ -110,7 +110,7 @@ class FilesDirectoryEventStream implements EventStreamInterface
         !$this->isDirectoryChecked && $this->_checkDir($this->statFilesDirectory) && $this->isDirectoryChecked = true;
 
         if (empty($this->_dirFiles)) {
-            $this->_dirFiles = scandir($this->statFilesDirectory, SORT_NATURAL);    
+            $this->_dirFiles = scandir($this->statFilesDirectory, SCANDIR_SORT_ASCENDING);    
         }
         
         while ($fileName = \current($this->_dirFiles)) {
