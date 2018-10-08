@@ -18,10 +18,10 @@
   "require": {
     "php": ">=7.1",
     "verse/modular": "^1.0",
-    "verse/env": "0.0.2",
+    "verse/env": "*",
     "psr/log": "^1.0",
-    "verse/router": "1.0.0",
-    "verse/storage": "^0.0.2"
+    "verse/router": "^1.0",
+    "verse/storage": "^0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.7"

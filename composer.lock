@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "140467abe41bbdd582d1605d630197b9",
+    "content-hash": "33f5ebb0cd9dce85ace1dae57f067e40",
     "packages": [
         {
             "name": "psr/log",
@@ -91,16 +91,16 @@
         },
         {
             "name": "verse/modular",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vetermanve/verse_modular.git",
-                "reference": "40cb609114752da41e1520f7440150ec6b372454"
+                "reference": "e9ae6cef29b8bea4c109908c94f751f862a3a21d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vetermanve/verse_modular/zipball/40cb609114752da41e1520f7440150ec6b372454",
-                "reference": "40cb609114752da41e1520f7440150ec6b372454",
+                "url": "https://api.github.com/repos/vetermanve/verse_modular/zipball/e9ae6cef29b8bea4c109908c94f751f862a3a21d",
+                "reference": "e9ae6cef29b8bea4c109908c94f751f862a3a21d",
                 "shasum": ""
             },
             "require": {
@@ -123,7 +123,7 @@
                 }
             ],
             "description": "Verse Modular is a micro framework for developing modular pipelines of code execution.",
-            "time": "2018-09-05T09:22:30+00:00"
+            "time": "2018-10-04T11:06:59+00:00"
         },
         {
             "name": "verse/router",
@@ -171,16 +171,16 @@
         },
         {
             "name": "verse/storage",
-            "version": "0.0.2",
+            "version": "0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vetermanve/verse_storage.git",
-                "reference": "29100ec9b6d96334b43ba3669b0799ee8b48e3c3"
+                "reference": "d06ae83555cc0e04d42bb47405110cae360e60ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vetermanve/verse_storage/zipball/29100ec9b6d96334b43ba3669b0799ee8b48e3c3",
-                "reference": "29100ec9b6d96334b43ba3669b0799ee8b48e3c3",
+                "url": "https://api.github.com/repos/vetermanve/verse_storage/zipball/d06ae83555cc0e04d42bb47405110cae360e60ed",
+                "reference": "d06ae83555cc0e04d42bb47405110cae360e60ed",
                 "shasum": ""
             },
             "require": {
@@ -213,7 +213,7 @@
                 }
             ],
             "description": "Simple storage library for Verse Framework",
-            "time": "2018-09-30T19:04:09+00:00"
+            "time": "2018-10-08T19:05:10+00:00"
         }
     ],
     "packages-dev": [
@@ -1497,16 +1497,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.1.5",
+            "version": "v4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "ac5af7c14c4f8abf0f77419e8397eff7a370df19"
+                "reference": "367e689b2fdc19965be435337b50bc8adf2746c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/ac5af7c14c4f8abf0f77419e8397eff7a370df19",
-                "reference": "ac5af7c14c4f8abf0f77419e8397eff7a370df19",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/367e689b2fdc19965be435337b50bc8adf2746c9",
+                "reference": "367e689b2fdc19965be435337b50bc8adf2746c9",
                 "shasum": ""
             },
             "require": {
@@ -1552,7 +1552,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2018-09-30T03:38:13+00:00"
+            "time": "2018-10-02T16:36:10+00:00"
         },
         {
             "name": "webmozart/assert",
