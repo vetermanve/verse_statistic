@@ -13,8 +13,6 @@ use Verse\Storage\StorageDependency;
 
 class VerseStorageStatRecords extends SimpleStorage implements StatRecordsStorageInterface
 {
-    protected $dataRootPath = '/tmp/';
-    
     const DATA_ROOT_PATH = 'data-root-path';
     const DATA_DATABASE  = 'data-database';
     const DATA_TABLE     = 'data-table';
@@ -79,21 +77,5 @@ class VerseStorageStatRecords extends SimpleStorage implements StatRecordsStorag
         
         
         return $this->search()->find($filter, $limit, __METHOD__);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDataRootPath()
-    {
-        return $this->dataRootPath;
-    }
-
-    /**
-     * @param mixed $dataRootPath
-     */
-    public function setDataRootPath($dataRootPath)
-    {
-        $this->dataRootPath = $dataRootPath;
     }
 }

@@ -14,8 +14,6 @@ use Verse\Storage\StorageDependency;
 
 class VerseStorageUnique extends SimpleStorage implements UniqueStorageInterface
 {
-    protected $dataRootPath = '/tmp/';
-
     const DATA_ROOT_PATH = 'data-root-path';
     const DATA_DATABASE  = 'data-database';
     const DATA_TABLE     = 'data-table';
@@ -80,23 +78,7 @@ class VerseStorageUnique extends SimpleStorage implements UniqueStorageInterface
         
         return $this->search()->find($filter, $limit, __METHOD__);
     }
-
-    /**
-     * @return mixed
-     */
-    public function getDataRootPath()
-    {
-        return $this->dataRootPath;
-    }
-
-    /**
-     * @param mixed $dataRootPath
-     */
-    public function setDataRootPath($dataRootPath)
-    {
-        $this->dataRootPath = $dataRootPath;
-    }
-
+    
     public function checkRecordsUnique($statsRecords) : array 
     {
         $uniqIdsHashIndex = [];
