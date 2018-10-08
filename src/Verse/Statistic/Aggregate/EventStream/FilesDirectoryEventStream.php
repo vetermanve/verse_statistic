@@ -25,7 +25,7 @@ class FilesDirectoryEventStream implements EventStreamInterface
      */
     private $_eventsPool = [];
     
-    private $_dirPointer;
+    private $_dirFiles = [];
     
     private $_currentStreamPosition = 0 ;
     
@@ -100,11 +100,6 @@ class FilesDirectoryEventStream implements EventStreamInterface
         file_put_contents($file, $data);
     }
     
-    public function rewindStreamPosition () 
-    {
-        \is_resource($this->_dirPointer) && rewind($this->_dirPointer);
-    }
-    
     public function forgetStreamPosition () 
     {
         $file = $this->_getSettingsFileName();
@@ -114,17 +109,19 @@ class FilesDirectoryEventStream implements EventStreamInterface
     private function _selectCurrentFile($findFileWithName = null) {
         !$this->isDirectoryChecked && $this->_checkDir($this->statFilesDirectory) && $this->isDirectoryChecked = true;
 
-        if (empty($this->_dirPointer)) {
-            $this->_dirPointer = opendir($this->statFilesDirectory);
+        if (empty($this->_dirFiles)) {
+            $this->_dirFiles = scandir($this->statFilesDirectory, SORT_NATURAL);    
         }
         
-        while ($fileName = \readdir($this->_dirPointer)) {
+        while ($fileName = \current($this->_dirFiles)) {
+            \next($this->_dirFiles);
+            
+            if ($findFileWithName && $fileName !== $findFileWithName) {
+                continue;
+            }
+            
             $filePath = $this->statFilesDirectory.DIRECTORY_SEPARATOR.$fileName;
             if (!is_dir($filePath)) {
-                if ($findFileWithName && $fileName !== $findFileWithName) {
-                    continue;
-                }
-                
                 $this->_currentFileName = $fileName;
                 $this->_currentFilePath = $filePath;
                 $this->_isCurrentFileReadingAvailable = true;
@@ -133,7 +130,7 @@ class FilesDirectoryEventStream implements EventStreamInterface
         }
         
         if ($findFileWithName && !$this->_isCurrentFileReadingAvailable) {
-            rewind($this->_dirPointer);
+            \reset($this->_dirFiles);
         }
     }
     
