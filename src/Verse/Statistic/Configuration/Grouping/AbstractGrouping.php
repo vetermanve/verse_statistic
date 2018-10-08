@@ -19,6 +19,7 @@ abstract class AbstractGrouping
     abstract public function getStatRecords() : array ;
     abstract public function getGroupType() : int ;
     abstract public function getGroupName() : string ;
+    abstract public function getDataRange() : array ;
     
     /**
      * @return EventsContainer
@@ -50,5 +51,10 @@ abstract class AbstractGrouping
     public function setEventsIdx(array $eventsIdx)
     {
         $this->eventsIdx = $eventsIdx;
+    }
+    
+    public function isPrimaryGrouping () 
+    {
+        return false;
     }
 }

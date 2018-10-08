@@ -2,7 +2,7 @@
 
 namespace Verse\Statistic\View;
 
-use Traversable;
+use Verse\Statistic\Core\Model\StatRecord;
 
 /**
  * Class ColumnPack
@@ -79,19 +79,19 @@ class ColumnPack implements \Iterator {
         $fieldsOrder = $dater->getFieldsOrder();
         $fieldsIdx = array_flip($dater->getFields());
         $grouping = $dater->getGrouping();
-        $hideSubtitle = $dater->getGrouping()->isHideSubtitle();
+        $hideSubtitle = $dater->getGrouping()->isPrimaryGrouping();
         $names = $grouping->getDataRange();
             
         $keys = array_flip(array_keys($names));
             
         foreach ($data as $row) {
-            $fId = $row['field_id'] . '.' . $row['group_id'];
-    
+            $fId = $row[StatRecord::EVENT_ID] . '.' . $row[StatRecord::GROUP_ID];
+            
             if (!isset($this->columns[$fId])) {
                 $column = new ColumnData();
                 
-                $column->fieldId  = $row['field_id'];
-                $column->group_id = $row['group_id'];
+                $column->fieldId  = $row[StatRecord::EVENT_ID];
+                $column->group_id = $row[StatRecord::GROUP_ID];
                 $column->field    = $fieldsIdx[$column->fieldId];
                 $column->title    = $fieldsIdx[$column->fieldId];
                 $column->order    = ($fieldsOrder[$column->fieldId]+1)*10000 + @$keys[$column->group_id];
@@ -99,7 +99,7 @@ class ColumnPack implements \Iterator {
                 if ($hideSubtitle) {
                     $column->subTitle = '';
                 } else {
-                    $column->subTitle = isset($names[$column->group_id]) ? $names[$column->group_id] : '#'.$column->group_id;
+                    $column->subTitle = $names[$column->group_id] ?? '#'.$column->group_id;
                 }
                 
                 $this->addColumn($column, $fId);
@@ -107,8 +107,8 @@ class ColumnPack implements \Iterator {
                 $column = $this->columns[$fId];
             }
         
-            $column->data[$row['time_id']]    = $row['cnt'];
-            $column->dataUnq[$row['time_id']] = $row['unq'];
+            $column->data[$row[StatRecord::TIME]]    = $row[StatRecord::COUNT];
+            $column->dataUnq[$row[StatRecord::TIME]] = $row[StatRecord::COUNT_UNQ];
         }
         
     }

@@ -44,4 +44,16 @@ class BasicGroping extends AbstractGrouping
     {
         return 'All';
     }
+
+    public function getDataRange() : array
+    {
+        return [];
+    }
+
+    public function isPrimaryGrouping()
+    {
+        return true;
+    }
+
+
 }
