@@ -20,7 +20,7 @@ class EventStreamReader extends ReaderProto
         $count = 0;
         
         while ($event = $this->eventStream->get()) {
-            $this->eventsContainer->events[] = $this->_decoder 
+            $this->eventsContainer->events[] = \is_string($event->body) && $this->_decoder 
                 ? $this->_decoder->decode($event->body)
                 : $event->body;
         
