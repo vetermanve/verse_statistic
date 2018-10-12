@@ -21,7 +21,8 @@
     "verse/env": "*",
     "psr/log": "^1.0",
     "verse/router": "^1.0",
-    "verse/storage": "^0.0"
+    "verse/storage": "^0.0",
+    "verse/statistic-client": "^0.0.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.7"

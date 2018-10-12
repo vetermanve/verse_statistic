@@ -3,10 +3,10 @@
 namespace Verse\Statistic;
 
 use PHPUnit\Framework\TestCase;
-use Verse\Statistic\WriteClient\Encoder\JsonEncoder;
-use Verse\Statistic\WriteClient\Stats;
-use Verse\Statistic\WriteClient\Transport\InMemoryTransport;
-use Verse\Statistic\WriteClient\Transport\LocalFileTransport;
+use Verse\StatisticClient\Encoder\JsonEncoder;
+use Verse\StatisticClient\Stats;
+use Verse\StatisticClient\Transport\InMemoryTransport;
+use Verse\StatisticClient\Transport\LocalFileTransport;
 
 class WriteClientTest extends TestCase
 {

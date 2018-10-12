@@ -6,8 +6,6 @@ namespace Verse\Statistic\Core;
 
 use PHPUnit\Framework\TestCase;
 use Verse\Router\Router;
-use Verse\Router\RouterConfig;
-use Verse\Router\RouterRegistry;
 use Verse\Statistic\Aggregate\EventStream\AmqpRouterEventStream;
 use Verse\Statistic\Configuration\Grouping\BasicGroping;
 use Verse\Statistic\Configuration\GroupingFactory;
@@ -16,9 +14,9 @@ use Verse\Statistic\Core\ExampleStats\ExampleVisitStatistic;
 use Verse\Statistic\Core\Schema\BasicStatsSchema;
 use Verse\Statistic\Storage\Records\VerseStorageStatRecords;
 use Verse\Statistic\Storage\Unique\VerseStorageUnique;
-use Verse\Statistic\WriteClient\Encoder\JsonEncoder;
-use Verse\Statistic\WriteClient\Stats;
-use Verse\Statistic\WriteClient\Transport\AmqpRouterTransport;
+use Verse\StatisticClient\Encoder\JsonEncoder;
+use Verse\StatisticClient\Stats;
+use Verse\StatisticClient\Transport\AmqpRouterTransport;
 
 class AmqpStatsWorkflowTest extends TestCase
 {
