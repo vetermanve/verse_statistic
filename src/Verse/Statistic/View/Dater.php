@@ -368,7 +368,7 @@ class Dater {
             
             $saveTimeZone = date_default_timezone_get();
             date_default_timezone_set('UTC');
-            $start  = mktime(0, 0, 0, date('m', $fromTime), date('d', $fromTime), date('Y', $fromTime));
+            $fromTime  = mktime(0, 0, 0, date('m', $fromTime), date('d', $fromTime), date('Y', $fromTime));
             $toTime = mktime(0, 0, 0, date('m', $toTime), date('d', $toTime), date('Y', $toTime));
             date_default_timezone_set($saveTimeZone);
         } else {
@@ -379,11 +379,16 @@ class Dater {
     
             $fromTime = $fromTime - $shiftValue;
             
-            $start  = floor(($fromTime) / 3600) * 3600;
+            $fromTime  = floor(($fromTime) / 3600) * 3600;
             $toTime = ceil($toTime / 3600) * 3600;
         }
+        
+        if ($fromTime >= $toTime) {
+           \trigger_error("From Time is grater than To Time, it's strange...", E_USER_WARNING); 
+           return [];
+        }
     
-        return array_reverse(range($start, $toTime, $this->getTimeInterval()));
+        return array_reverse(range($fromTime, $toTime, $this->getTimeInterval()));
     }
     
     public function getRowsNamed()
