@@ -356,9 +356,9 @@ class Dater {
     {
         $toTime = $this->toTime;
         $fromTime = $this->fromTime;
-        
+
+        $interval = TimeScale::INTERVAL[$this->timeScale];
         if ($shitType == self::SHIFT_ADD_PAST) {
-            $interval = TimeScale::INTERVAL[$this->timeScale];
             $fromTime -= $interval;    
         }
 
