@@ -64,4 +64,16 @@ class DaterTimeTest extends TestCase
 
         $this->assertCount(5, $rows);
     }
+
+    public function testMonthOneMonthRows ()
+    {
+        $dater = new Dater();
+        $dater->setTimeScale(TimeScale::MONTH);
+        $dater->setFromTime(strtotime('-2 hours'));
+        $dater->setToTime(time());
+
+        $rows = $dater->getRows();
+
+        $this->assertCount(1, $rows);
+    }
 }

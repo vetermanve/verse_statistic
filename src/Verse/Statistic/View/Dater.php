@@ -386,13 +386,17 @@ class Dater {
                 $toTime = mktime(0, 0, 0, date('m', $toTime), 1, date('Y', $toTime));
                 $start    = (new DateTime())->setTimestamp($fromTime);
                 $end      = (new DateTime())->setTimestamp($toTime);
-                $interval = DateInterval::createFromDateString('1 month');
-                $period   = new DatePeriod($start, $interval, $end);
-
+                
                 $results = [];
-                /* @var $period DateTime[] */
-                foreach ($period as $id => $dt) {
-                    $results[] = $dt->getTimestamp();
+                if ($start->getTimestamp() === $end->getTimestamp()) {
+                    $results[] = $start->getTimestamp();
+                } else {
+                    $interval = DateInterval::createFromDateString('1 month');
+                    $period   = new DatePeriod($start, $interval, $end);
+                    /* @var $period DateTime[] */
+                    foreach ($period as $id => $dt) {
+                        $results[] = $dt->getTimestamp();
+                    }    
                 }
                 
                 return array_reverse($results);
