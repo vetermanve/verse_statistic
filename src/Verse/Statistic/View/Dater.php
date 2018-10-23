@@ -356,10 +356,10 @@ class Dater {
     {
         $toTime = $this->toTime;
         $fromTime = $this->fromTime;
-        $interval = TimeScale::INTERVAL[$this->timeScale];
         
-        if ($shitType !== null) {
-            $fromTime += (self::SHIFT_ADD_PAST ? -$interval : $interval);    
+        if ($shitType == self::SHIFT_ADD_PAST) {
+            $interval = TimeScale::INTERVAL[$this->timeScale];
+            $fromTime -= $interval;    
         }
 
         if ($fromTime >= $toTime) {
@@ -382,22 +382,20 @@ class Dater {
                 break;
                 
             case TimeScale::MONTH:
-                $fromTime  = mktime(0, 0, 0, date('m', $fromTime), 1, date('Y', $fromTime));
-                $toTime = mktime(0, 0, 0, date('m', $toTime), 1, date('Y', $toTime));
-                $start    = (new DateTime())->setTimestamp($fromTime);
-                $end      = (new DateTime())->setTimestamp($toTime);
+                $fromTimeAligned  = mktime(0, 0, 0, date('m', $fromTime), 1, date('Y', $fromTime));
+                $toTimeAligned = mktime(0, 0, 0, date('m', $toTime), 1, date('Y', $toTime));
+                $start    = (new DateTime())->setTimestamp($fromTimeAligned);
+                $end      = (new DateTime())->setTimestamp($toTimeAligned);
                 
-                $results = [];
-                if ($start->getTimestamp() === $end->getTimestamp()) {
-                    $results[] = $start->getTimestamp();
-                } else {
-                    $interval = DateInterval::createFromDateString('1 month');
-                    $period   = new DatePeriod($start, $interval, $end);
-                    /* @var $period DateTime[] */
-                    foreach ($period as $id => $dt) {
-                        $results[] = $dt->getTimestamp();
-                    }    
+                $interval = DateInterval::createFromDateString('1 month');
+                $period   = new DatePeriod($start, $interval, $end);
+                
+                /* @var $period DateTime[] */
+                foreach ($period as $id => $dt) {
+                    $results[] = $dt->getTimestamp();
                 }
+
+                $results[] = $period->getEndDate()->getTimestamp();
                 
                 return array_reverse($results);
         }

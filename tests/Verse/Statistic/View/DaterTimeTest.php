@@ -69,11 +69,18 @@ class DaterTimeTest extends TestCase
     {
         $dater = new Dater();
         $dater->setTimeScale(TimeScale::MONTH);
-        $dater->setFromTime(strtotime('-2 hours'));
-        $dater->setToTime(time());
+        $dater->setFromTime(strtotime('10.10.2018'));
+        $dater->setToTime(strtotime('11.10.2018'));
 
         $rows = $dater->getRows();
-
         $this->assertCount(1, $rows);
+        
+        $named = $dater->getRowsNamed();
+        $expected = array (
+            1538341200 => '10/2018',
+            1535749200 => '09/2018',
+        );
+        
+        $this->assertEquals($expected, $named);
     }
 }
