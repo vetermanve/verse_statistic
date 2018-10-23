@@ -4,3 +4,4 @@ vendor/
 data/
 stats_stream/
 jbase/
+composer.lock

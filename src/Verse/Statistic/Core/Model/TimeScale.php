@@ -6,8 +6,14 @@ namespace Verse\Statistic\Core\Model;
 
 class TimeScale
 {
-    const RAW   = 0;
-    const HOUR  = 1;
-    const DAY   = 2;
-    const MONTH = 3;
+    public const RAW   = 0;
+    public const HOUR  = 1;
+    public const DAY   = 2;
+    public const MONTH = 3;
+
+    public const INTERVAL = [
+        self::HOUR  => 3600, // 60 min
+        self::DAY   => 86400, // 24h
+        self::MONTH => 2678400, //31 day
+    ];
 }

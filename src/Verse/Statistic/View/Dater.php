@@ -2,6 +2,10 @@
 
 namespace Verse\Statistic\View;
 
+use DateInterval;
+use DatePeriod;
+use DateTime;
+
 use Verse\Statistic\Configuration\Grouping\AbstractGrouping;
 use Verse\Statistic\Configuration\Stats\AbstractStatistic;
 use Verse\Statistic\Core\Model\StatRecord;
@@ -121,11 +125,6 @@ class Dater {
         $this->fields = $resultFields;
     }
     
-    public function getTimeInterval() 
-    {
-        return $this->timeScale === 'day' ?  86400 : 3600;
-    }
-    
     public function getLoadFilter () 
     {
         //DB index: company_id, group_type, time_id, field_id, group_id
@@ -163,9 +162,11 @@ class Dater {
     }
     
     private function _parseFields($fields) {
-        if (is_array($fields)) {
+        if (\is_array($fields)) {
             return $fields;
-        } else if(is_callable($fields)) {
+        } 
+        
+        if(\is_callable($fields)) {
             return call_user_func($fields);
         }
         
@@ -262,8 +263,7 @@ class Dater {
         $axData   = [];
         $timeTable = [];
 
-        $times = $this->getRowsNamed();
-        foreach ($times as $time => $dateName) {
+        foreach ($this->getRows() as $time) {
             $values = [];
             foreach ($columnPack->columns as $column) {
                 if (!$column->hideOnGraph) {
@@ -271,24 +271,23 @@ class Dater {
                     $axData[$key][self::TITLE] = $column->title;
                     $axData[$key][self::SERIES_DATA][] = isset($column->data[$time]) ? [
                         $time * 1000,
-                        (float)$column->data[$time]
+                        (float) $column->data[$time],
                     ] : [$time * 1000, 0];
                 }
-                
+
                 $dataToTable = [];
-                if(isset($column->data[$time])) {
+                
+                if (isset($column->data[$time])) {
                     $dataToTable[] = $column->data[$time];
                 }
-                if(isset($column->dataRelated[$time])) {
+                
+                if (isset($column->dataRelated[$time])) {
                     $dataToTable[] = $column->dataRelated[$time];
                 }
+                
                 $values[] = $dataToTable;
             }
 
-            // $timeTable[] = [
-            //     self::VALUES => $values,
-            //     self::DATE   => $time,
-            // ];
             $timeTable[$time] = $values;
         }
 
@@ -357,44 +356,67 @@ class Dater {
     {
         $toTime = $this->toTime;
         $fromTime = $this->fromTime;
+        $interval = TimeScale::INTERVAL[$this->timeScale];
         
-        if ($this->timeScale === TimeScale::DAY) {
-            $shitPoint = 86400;
-            $shiftValue = ($shitType === null) 
-                    ? 0 
-                    : ($shitType === self::SHIFT_ADD_PAST ? $shitPoint : -$shitPoint);
-            
-            $fromTime = $fromTime - $shiftValue;
-            
-            $saveTimeZone = date_default_timezone_get();
-            date_default_timezone_set('UTC');
-            $fromTime  = mktime(0, 0, 0, date('m', $fromTime), date('d', $fromTime), date('Y', $fromTime));
-            $toTime = mktime(0, 0, 0, date('m', $toTime), date('d', $toTime), date('Y', $toTime));
-            date_default_timezone_set($saveTimeZone);
-        } else {
-            $shitPoint = 3600;
-            $shiftValue = ($shitType === null)
-                ? 0
-                : ($shitType === self::SHIFT_ADD_PAST ? $shitPoint : -$shitPoint);
-    
-            $fromTime = $fromTime - $shiftValue;
-            
-            $fromTime  = floor(($fromTime) / 3600) * 3600;
-            $toTime = ceil($toTime / 3600) * 3600;
+        if ($shitType !== null) {
+            $fromTime += (self::SHIFT_ADD_PAST ? -$interval : $interval);    
         }
-        
+
         if ($fromTime >= $toTime) {
-           \trigger_error("From Time is grater than To Time, it's strange...", E_USER_WARNING); 
-           return [];
+            \trigger_error("From Time is grater than To Time, it's strange...", E_USER_WARNING);
+            return [];
+        }
+        
+        switch ($this->timeScale) {
+            case TimeScale::HOUR:
+                $fromTime  = floor($fromTime / 3600) * 3600;
+                $toTime = ceil($toTime / 3600) * 3600;
+                return range($toTime, $fromTime, $interval);
+                break;
+                
+            case TimeScale::DAY:
+                $fromTime  = mktime(0, 0, 0, date('m', $fromTime), date('d', $fromTime), date('Y', $fromTime));
+                $toTime = mktime(0, 0, 0, date('m', $toTime), date('d', $toTime), date('Y', $toTime));
+
+                return range($toTime, $fromTime, $interval);
+                break;
+                
+            case TimeScale::MONTH:
+                $fromTime  = mktime(0, 0, 0, date('m', $fromTime), 1, date('Y', $fromTime));
+                $toTime = mktime(0, 0, 0, date('m', $toTime), 1, date('Y', $toTime));
+                $start    = (new DateTime())->setTimestamp($fromTime);
+                $end      = (new DateTime())->setTimestamp($toTime);
+                $interval = DateInterval::createFromDateString('1 month');
+                $period   = new DatePeriod($start, $interval, $end);
+
+                $results = [];
+                /* @var $period DateTime[] */
+                foreach ($period as $id => $dt) {
+                    $results[] = $dt->getTimestamp();
+                }
+                
+                return array_reverse($results);
         }
     
-        return array_reverse(range($fromTime, $toTime, $this->getTimeInterval()));
+        return [];
     }
     
     public function getRowsNamed()
     {
         $res = [];
         $mask = $this->timeScale !== TimeScale::DAY ? 'd.m H:i' : 'd.m';
+        switch ($this->timeScale) {
+            case TimeScale::MONTH : 
+                $mask = 'm/Y';
+                break;
+            case TimeScale::DAY :
+                $mask = 'd.m.Y';
+                break;
+            case TimeScale::HOUR :
+                $mask = 'd.m H:i';
+                break;
+        }
+        
         foreach ($this->getRows(self::SHIFT_ADD_PAST) as $time) {
             $res[$time] = date($mask, $time);       
         }
@@ -500,7 +522,7 @@ class Dater {
         foreach ($this->currentViewData['fields'] as &$fieldInfo) {
             $fieldInfo['fields'] = $this->_parseFields($fieldInfo['fields']);
             $fields = array_merge($fields, $fieldInfo['fields']);
-        }
+        } unset($fieldInfo);
         
         $this->setFields($fields);
         
