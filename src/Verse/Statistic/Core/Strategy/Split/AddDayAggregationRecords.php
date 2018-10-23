@@ -19,10 +19,6 @@ class AddDayAggregationRecords extends StatsModuleProto implements ModularStrate
 
     public function run()
     {
-        // prevent time zone
-        $saveTimeZone = date_default_timezone_get();
-        date_default_timezone_set('UTC');
-
         $times = [];
         // split events 
         foreach ($this->container->data as $statRecord) {
@@ -38,9 +34,6 @@ class AddDayAggregationRecords extends StatsModuleProto implements ModularStrate
                     StatRecord::TIME_SCALE => TimeScale::DAY,
                 ] + $statRecord;
         }
-
-        // restore time zone
-        date_default_timezone_set($saveTimeZone);
     }
 
     private function _makeAggregateTime($time) {
