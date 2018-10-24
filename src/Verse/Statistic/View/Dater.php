@@ -290,12 +290,11 @@ class Dater {
 
             $series = [];
             foreach ($times as $time) {
-                $value = isset($column->data[$time]) ?? 0;
-                $series[] =  [$time * 1000, $value];
+                $series[] =  [$time * 1000, $column->data[$time] ?? 0];
             }
 
             $seriesArray[] = [
-                self::TITLE => $column->title,
+                self::SERIES_NAME => $column->title,
                 self::SERIES_DATA => $series
             ];
         }
