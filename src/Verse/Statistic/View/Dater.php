@@ -252,61 +252,75 @@ class Dater {
     const SCOPE_ID     = 'scope_id';
     const COLUMN_NAMES = 'column_names';
     
-    public function getResultData () 
+    public function getTableData () : array
     {
-        $columnPack = $this->getColumnPack();
-        $fieldsTitle = [];
-        foreach ($columnPack->columns as $column) {
-            $fieldsTitle[] = $column->title . ($column->subTitle ? ' ' . $column->subTitle : '');
-        }
-
-        $axData   = [];
-        $timeTable = [];
-
+        $table = [];
         foreach ($this->getRows() as $time) {
             $values = [];
-            foreach ($columnPack->columns as $column) {
-                if (!$column->hideOnGraph) {
-                    $key = $column->fieldId . '.' . $column->group_id;
-                    $axData[$key][self::TITLE] = $column->title;
-                    $axData[$key][self::SERIES_DATA][] = isset($column->data[$time]) ? [
-                        $time * 1000,
-                        (float) $column->data[$time],
-                    ] : [$time * 1000, 0];
-                }
-
+            foreach ($this->columnPack->columns as $column) {
                 $dataToTable = [];
-                
+
                 if (isset($column->data[$time])) {
                     $dataToTable[] = $column->data[$time];
                 }
-                
+
                 if (isset($column->dataRelated[$time])) {
                     $dataToTable[] = $column->dataRelated[$time];
                 }
-                
+
                 $values[] = $dataToTable;
             }
 
-            $timeTable[$time] = $values;
+            $table[$time] = $values;
         }
+        
+        return $table;
+    }
+    
+    public function getSeriesArrayData () : array
+    {
+        $times = \array_reverse($this->getRows());
 
+        // Axes
         $seriesArray = [];
-        foreach ($axData as $key => $values) {
+        foreach ($this->columnPack->columns as $key => $column) {
+            if ($column->hideOnGraph) {
+                continue;
+            }
+
+            $series = [];
+            foreach ($times as $time) {
+                $value = isset($column->data[$time]) ?? 0;
+                $series[] =  [$time * 1000, $value];
+            }
+
             $seriesArray[] = [
-                self::SERIES_NAME => $values[self::TITLE],
-                self::SERIES_DATA => array_reverse($values[self::SERIES_DATA]),
+                self::TITLE => $column->title,
+                self::SERIES_DATA => $series
             ];
         }
-
-        $viewData = $this->getCurrentViewData();
         
+        return $seriesArray;
+    }
+    
+    public function getFieldsTitles () : array
+    {
+        $fieldsTitles = [];
+        foreach ($this->columnPack->columns as $column) {
+            $fieldsTitles[] = $column->title . ($column->subTitle ? ' ' . $column->subTitle : '');
+        }
+        
+        return $fieldsTitles;
+    }
+    
+    public function getResultData () : array
+    {
         $data = [
             self::SCOPE_ID     => $this->scopeId,
-            self::TITLE        => $viewData[self::TITLE] ,
-            self::COLUMN_NAMES => $fieldsTitle,
-            self::SERIES       => $seriesArray,
-            self::TABLE        => $timeTable,
+            self::TITLE        => $this->currentViewData[self::TITLE] ,
+            self::COLUMN_NAMES => $this->getFieldsTitles(),
+            self::SERIES       => $this->getSeriesArrayData(),
+            self::TABLE        => $this->getTableData(),
         ];
 
         return $data;
