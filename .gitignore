@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
+old/
 vendor/
 data/
 stats_stream/
