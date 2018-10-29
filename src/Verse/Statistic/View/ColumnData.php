@@ -48,7 +48,6 @@ class ColumnData {
             'rightColumn',
             'hideOnGraph',
             'title',
-            'objId'
         ];
         
         self::$acceptedDataBindIdx = self::$acceptedFieldsIdx;

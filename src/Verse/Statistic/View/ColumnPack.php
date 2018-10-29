@@ -64,17 +64,6 @@ class ColumnPack implements \Iterator {
     
     public function bindColumn($data)
     {
-        // Example column
-        /* 
-        
-         */
-//      'group_type' => string '0' (length=1)
-//      'field_id' => string '3960890811' (length=10)
-//      'time_id' => string '1423602001' (length=10)
-//      'group_id' => string '0' (length=1)
-//      'cnt' => string '5228553' (length=7)
-//      'unq' => string '23412' (length=5)
-            
         $dater = $this->dater;
         $fieldsOrder = $dater->getFieldsOrder();
         $fieldsIdx = array_flip($dater->getFields());

@@ -62,7 +62,7 @@ class DaterTimeTest extends TestCase
 
         $rows = $dater->getRows();
 
-        $this->assertCount(5, $rows);
+        $this->assertCount(6, $rows);
     }
 
     public function testMonthOneMonthRows ()

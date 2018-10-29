@@ -190,52 +190,51 @@ class Dater {
     {
         $this->viewData = [];
         $this->defGrType = @$this->currentViewData['gr'];
+        $orderId = 1;
         
-        foreach ($this->currentViewData['fields'] as $id => $formatData) {
+        foreach ($this->currentViewData['fields'] as $formatData) {
             $viewFormatter = $formatData['format'];
-            $fieldsIds = $this->getFieldsIds($formatData['fields']);
+            $fieldIds = $this->getFieldsIds($formatData['fields']);
+
+            // get first field
+            $firstField = \key($fieldIds);
+            $firstFieldId = $fieldIds[$firstField];
             
-            $firstFieldId = reset($fieldsIds);
-            $objId = $id;
+            // if no first field data - skip
+            if (!isset($this->sourceColumn->columnsByField[$firstFieldId])) {
+                continue;
+            }
             
-            $eachSingleFieldFormat = isset($formatData['applyAllFields']);
+            // processing always based on groups, include root data that just in root group
+            // we get groups form first field for the start 
+            $existedGroupIds = array_keys($this->sourceColumn->columnsByField[$firstFieldId]);
             
-            $mainFieldsIds = $eachSingleFieldFormat ? $fieldsIds : [$firstFieldId];
-            
-            foreach ($mainFieldsIds as $fieldId) {
+            foreach ($existedGroupIds as $groupId) {
+                $columns = [];
+
+                foreach ($fieldIds as $fieldId) {
+                    if (!isset($this->sourceColumn->columnsByField[$fieldId][$groupId])) {
+                        break;
+                    }
     
-                $fieldsPassingToFormat = $eachSingleFieldFormat ? [$fieldId] : $fieldsIds;
-                
-                if (!isset($this->sourceColumn->columnsByField[$fieldId])) {
+                    $columns[] = $this->sourceColumn->columnsByField[$fieldId][$groupId];
+                }
+
+                // if no data for some of columns in this period we skip
+                if (\count($columns) !== \count($fieldIds)) {
                     continue;
                 }
-                
-                reset($this->sourceColumn->columnsByField[$fieldId]);
-                $existedGroupers = array_keys($this->sourceColumn->columnsByField[$fieldId]); 
-                
-                foreach ($existedGroupers as $grouperId) {
-                    $columnsPassingToFormat = [];
-    
-                    foreach ($fieldsPassingToFormat as $toFormatFieldId) {
-                        if (!isset($this->sourceColumn->columnsByField[$toFormatFieldId][$grouperId])) {
-                            break;
-                        }
-        
-                        $columnsPassingToFormat[] = $this->sourceColumn->columnsByField[$toFormatFieldId][$grouperId];
-                    }
-    
-                    if (count($columnsPassingToFormat) != count($fieldsPassingToFormat)) {
-                        continue;
-                    }
-    
-                    $resColumn = call_user_func_array($viewFormatter, $columnsPassingToFormat); // в этом месте вызывается космос
-                    $resColumn->objId = $objId;
-                    /* @var $resColumn ColumnData */
-                    $resColumn->bindInData($formatData);
-                    $resColumn->copyFields(reset($columnsPassingToFormat), [StatRecord::GROUP_ID, StatRecord::EVENT_ID, 'field', 'order']);
-    
-                    $this->columnPack->addColumn($resColumn);
-                }
+
+                /* @var $resColumn ColumnData */
+                // call formatting function
+                $resColumn = \call_user_func_array($viewFormatter, $columns);  
+                $resColumn->bindInData($formatData);
+                $resColumn->order = $orderId++;
+                $resColumn->group_id = $groupId;
+                $resColumn->field = $firstField; 
+                $resColumn->fieldId = $firstFieldId; 
+
+                $this->columnPack->addColumn($resColumn);
             }
         }
         
