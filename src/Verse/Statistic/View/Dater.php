@@ -293,7 +293,7 @@ class Dater {
             }
 
             $seriesArray[] = [
-                self::SERIES_NAME => $column->title,
+                self::SERIES_NAME => $column->title . ($column->subTitle ? ' ' . $column->subTitle : ''),
                 self::SERIES_DATA => $series
             ];
         }
