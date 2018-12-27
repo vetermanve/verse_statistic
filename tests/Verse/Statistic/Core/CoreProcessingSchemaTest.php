@@ -70,6 +70,12 @@ class CoreProcessingSchemaTest extends TestCase
         });
 
         $this->assertCount($rawRecordsCount, $monthAggregated);
+
+        $weekAggregated = array_filter($container->data, function ($rec) {
+            return $rec[StatRecord::TIME_SCALE] === TimeScale::WEEK;
+        });
+
+        $this->assertCount($rawRecordsCount, $weekAggregated);
     }
 
     public function testFileStatsFullSchema ()

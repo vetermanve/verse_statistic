@@ -19,6 +19,7 @@ use Verse\Statistic\Core\Strategy\Split\AddScopedStatRecordsToGlobalScope;
 use Verse\Statistic\Core\Strategy\Split\AddMonthAggregationRecords;
 use Verse\Statistic\Core\Strategy\Split\AddDayAggregationRecords;
 use Verse\Statistic\Core\Strategy\Split\AddHoursAggregationRecords;
+use Verse\Statistic\Core\Strategy\Split\AddWeekAggregationRecords;
 use Verse\Statistic\Core\Strategy\Storing\StoreResults;
 use Verse\Statistic\Core\Strategy\UniequeProcessing\LoadUniqDataForStatRecords;
 use Verse\Statistic\Core\Strategy\UniequeProcessing\StoreUniqueToStorage;
@@ -50,7 +51,8 @@ class BasicStatsSchema extends StatsModuleProto implements ModularSchemaInterfac
         $processor->addStrategy(new AddHoursAggregationRecords(), $processor::SECTION_RUN);
         $processor->addStrategy(new AddDayAggregationRecords(), $processor::SECTION_RUN);
         $processor->addStrategy(new AddMonthAggregationRecords(), $processor::SECTION_RUN);
-        
+        $processor->addStrategy(new AddWeekAggregationRecords(), $processor::SECTION_RUN);
+
         // remove raw time records
         $processor->addStrategy(new FilterRawTimeRecords(), $processor::SECTION_RUN);
         
