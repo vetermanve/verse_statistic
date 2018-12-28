@@ -410,6 +410,32 @@ class Dater {
                 $results[] = $period->getEndDate()->getTimestamp();
                 
                 return array_reverse($results);
+
+            case TimeScale::WEEK:
+                // get mktime for first day of $time's week
+                // N - ISO-8601 number of the day of the week - 1 (for Monday) through 7 (for Sunday)
+                $fromStartWeekDayOffset = date('N', $fromTime) - 1;
+                $time = strtotime("-{$fromStartWeekDayOffset} days", $fromTime);
+                $fromTimeAligned = (int)mktime(0, 0, 0, date('m', $time), date('d', $time), date('Y', $time));
+
+                $toStartWeekDayOffset = date('N', $toTime) - 1;
+                $time = strtotime("-{$toStartWeekDayOffset} days", $toTime);
+                $toTimeAligned = (int)mktime(0, 0, 0, date('m', $time), date('d', $time), date('Y', $time));
+
+                $start    = (new DateTime())->setTimestamp($fromTimeAligned);
+                $end      = (new DateTime())->setTimestamp($toTimeAligned);
+
+                $interval = DateInterval::createFromDateString('1 week');
+                $period   = new DatePeriod($start, $interval, $end);
+
+                /* @var $period DateTime[] */
+                foreach ($period as $id => $dt) {
+                    $results[] = $dt->getTimestamp();
+                }
+
+                $results[] = $period->getEndDate()->getTimestamp();
+
+                return array_reverse($results);
         }
     
         return [];
@@ -424,6 +450,7 @@ class Dater {
                 $mask = 'm/Y';
                 break;
             case TimeScale::DAY :
+            case TimeScale::WEEK :
                 $mask = 'd.m.Y';
                 break;
             case TimeScale::HOUR :
